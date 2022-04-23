@@ -47,7 +47,7 @@ export const utils = {
     const { selectedFuelTypes, selectedTransmissionTypes, selectedTransmissionSpeeds } = filters;
 
     // This is handled in the backend but when search is used, the filter is not applied
-    if (filters.selectedCategory !== 'All') {
+    if (filters.selectedCategory && filters.selectedCategory !== 'All') {
       filteredCars = filteredCars.filter((car) => car.brand === filters.selectedCategory);
     }
 

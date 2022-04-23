@@ -212,9 +212,35 @@ const CarPage = () => {
               />
               <div className="lg:col-span-3">
                 <div className="m-2 h-96 lg:h-full">
+                  <CSSTransition
+                    in={queriedCarsFiltered && queriedCarsFiltered.length == 0}
+                    timeout={500}
+                    classNames="fade"
+                    unmountOnExit>
+                    <div className="sm:row-start-2 sm:col-start-2 text-center">
+                      <div className="flex flex-col place-items-center place-content-center space-y-2 ">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-24 w-24 text-gray-800"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={2}>
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                        <h1 className="font-medium text-2xl">No Results</h1>
+                        <p className="text-base text-gray-600">Try removing some filters</p>
+                      </div>
+                    </div>
+                  </CSSTransition>
+
                   <TransitionGroup
                     className="mt-6 grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 lg:grid-cols-3 grid-rows-non1 gap-y-10 gap-x-6 xl:gap-x-8 pb-8 mb-8 sm:pb-0 sm:mb-8"
-                    id="fade-list ">
+                    id="fade-list">
                     {currentPageCars && currentPageCars.length ? (
                       currentPageCars.map((car, index) => (
                         <CSSTransition
@@ -226,25 +252,7 @@ const CarPage = () => {
                         </CSSTransition>
                       ))
                     ) : (
-                      <div className="sm:row-start-2 sm:col-start-2 text-center">
-                        <div className="flex flex-col place-items-center place-content-center space-y-2 ">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-24 w-24 text-gray-800"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth={2}>
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                          </svg>
-                          <h1 className="font-medium text-2xl">No Results</h1>
-                          <p className="text-base text-gray-600">Try removing some filters</p>
-                        </div>
-                      </div>
+                      <div></div>
                     )}
                   </TransitionGroup>
 
