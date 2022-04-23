@@ -81,6 +81,17 @@ const CarPage = () => {
 
       if (!loading && data) setQueriedCars(utils.filterCars(data.filteredCars, filters));
     } else {
+      if (!search.length) {
+        let filter = {
+          brand: selectedCategory,
+        };
+
+        if (filter.brand === 'All') delete filter.brand;
+
+        const { data, loading } = await refetch({ filter });
+        if (!loading && data) return setQueriedCars(utils.filterCars(data.filteredCars, filters));
+      }
+
       const { data, loading } = await client.query({
         query: SEARCH_CAR_QUERY,
         variables: { text: search },
@@ -97,7 +108,7 @@ const CarPage = () => {
 
   useEffect(() => {
     updateQueriedCars({ search: searchText });
-  }, [searchText]);
+  }, [searchText.length]);
 
   const queriedCarsFiltered = utils.filterByPrice(
     utils.filterCars(
