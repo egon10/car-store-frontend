@@ -2,4 +2,4 @@
 
 ### Local setup
 
-- [How to setup](https://github.com/egon10/car-store)
+- [How to setup](https://github.com/egon10/car-store#readme)
