@@ -2,12 +2,4 @@
 
 ### Local setup
 
-- Run `npm install`
-
-- Run `npm run build`
-
-- Start the application with `npm start`
-
-### Unit tests
-
-- Run `npm test`
+- [How to setup](https://github.com/egon10/car-store)
