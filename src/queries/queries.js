@@ -27,3 +27,17 @@ export const GET_CARS_FILTERED_QUERY = gql`
     }
   }
 `;
+
+export const SEARCH_CAR_QUERY = gql`
+  query searchCars($text: String!) {
+    searchCars(text: $text) {
+      brand
+      car_model
+      fuel_type
+      transmission
+      year
+      price
+      image_url
+    }
+  }
+`;

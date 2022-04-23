@@ -9,7 +9,9 @@ export const Pagination = ({ Page, setPage }) => {
     <div className="px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
       <div className="flex-1 flex justify-between sm:hidden">
         <button
-          className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+          className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 
+          ${currentPage === 1 ? 'opacity-75' : 'opacity-100'} 
+          bg-white hover:bg-gray-50`}
           onClick={(e) => {
             e.preventDefault();
             if (currentPage === 1) return;
@@ -19,7 +21,9 @@ export const Pagination = ({ Page, setPage }) => {
           Previous{' '}
         </button>
         <button
-          className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+          className={`ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 ${
+            currentPage === totalPages ? 'opacity-75' : 'opacity-100'
+          } bg-white hover:bg-gray-50`}
           onClick={(e) => {
             e.preventDefault();
             if (currentPage === totalPages) return;
@@ -51,13 +55,11 @@ export const Pagination = ({ Page, setPage }) => {
             aria-label="Pagination">
             <button
               className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-              onClick={(e) => {
+              onClick={() => {
                 if (currentPage === 1) return;
 
                 setPage({ ...Page, currentPage: currentPage > 1 ? currentPage - 1 : 0 });
               }}>
-              <span className="sr-only">Previous</span>
-
               <svg
                 className="h-5 w-5"
                 xmlns="http://www.w3.org/2000/svg"
@@ -94,8 +96,6 @@ export const Pagination = ({ Page, setPage }) => {
 
                 setPage({ ...Page, currentPage: currentPage + 1 });
               }}>
-              <span className="sr-only">Next</span>
-
               <svg
                 className="h-5 w-5"
                 xmlns="http://www.w3.org/2000/svg"

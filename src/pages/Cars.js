@@ -1,17 +1,17 @@
 import React, { useContext, useEffect, useState, Fragment } from 'react';
 import { DatabaseContext } from '../providers/DatabaseProvider';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { useQuery } from '@apollo/client';
 
-import { GET_CARS_FILTERED_QUERY } from '../queries/queries';
-import { Pagination, MAX_ITEMS_PER_PAGE } from '../components/Pagination';
+import { GET_CARS_FILTERED_QUERY, SEARCH_CAR_QUERY } from '../queries/queries';
 import { utils } from '../utils/utils';
 
+import '../animations.css';
+
+import { Pagination, MAX_ITEMS_PER_PAGE } from '../components/Pagination';
 import DropDown from '../components/DropDowns/DropDown';
 import CategoryFilter from '../components/CategoryFilter';
-
-import { CSSTransition, SwitchTransition, TransitionGroup } from 'react-transition-group';
-
-import '../animations.css';
+import SearchBar from '../components/SearchBar';
 
 const ProductCard = ({ car, index }) => {
   let delay = index * 150;
@@ -36,7 +36,7 @@ const ProductCard = ({ car, index }) => {
   );
 };
 
-const ShopPage = () => {
+const CarPage = () => {
   const { client } = useContext(DatabaseContext);
 
   let [queriedCars, setQueriedCars] = useState([]);
@@ -53,6 +53,7 @@ const ShopPage = () => {
   let [filterMenuOpened, setFilterMenuOpened] = useState(false);
 
   let [sort, setSort] = useState({ selected: '', index: 0 });
+
   let [filters, setFilters] = useState({
     selectedFuelTypes: [],
     selectedTransmissionSpeeds: [],
@@ -63,6 +64,8 @@ const ShopPage = () => {
     },
   });
 
+  let [searchText, setSearchText] = useState('');
+
   const { loading, data, refetch } = useQuery(GET_CARS_FILTERED_QUERY, {
     variables: {
       filter: {},
@@ -72,9 +75,29 @@ const ShopPage = () => {
     client,
   });
 
+  const updateQueriedCars = async ({ filter, search }) => {
+    if (filter) {
+      const { data, loading } = await refetch({ filter });
+
+      if (!loading && data) setQueriedCars(utils.filterCars(data.filteredCars, filters));
+    } else {
+      const { data, loading } = await client.query({
+        query: SEARCH_CAR_QUERY,
+        variables: { text: search },
+      });
+      if (!loading) {
+        setQueriedCars(utils.filterCars(data.searchCars, filters));
+      }
+    }
+  };
+
   useEffect(() => {
     if (data) setQueriedCars(data.filteredCars);
   }, [data]);
+
+  useEffect(() => {
+    updateQueriedCars({ search: searchText });
+  }, [searchText]);
 
   const queriedCarsFiltered = utils.filterByPrice(
     utils.filterCars(
@@ -87,6 +110,7 @@ const ShopPage = () => {
   );
 
   const currentPageCars = utils.chunk(queriedCarsFiltered, MAX_ITEMS_PER_PAGE)[currentPage - 1];
+
   useEffect(() => {
     if (queriedCarsFiltered && queriedCarsFiltered.length) {
       setPage({
@@ -115,7 +139,8 @@ const ShopPage = () => {
               {queriedCarsFiltered ? queriedCarsFiltered.length : 0})
             </h1>
 
-            <div className="flex items-center">
+            <div className="flex items-center justify-center space-x-5">
+              <SearchBar mobile={false} text={searchText} setText={setSearchText} />
               <div className="relative inline-block text-left">
                 <DropDown
                   name="Sort"
@@ -145,6 +170,9 @@ const ShopPage = () => {
               </button>
             </div>
           </div>
+          <div className="container flex justify-center py-4 md:pt-16 border-b border-gray-200 md:hidden">
+            <SearchBar mobile={true} text={searchText} setText={setSearchText} />
+          </div>
 
           <section aria-labelledby="products-heading" className="pt-6 pb-24">
             <h2 id="products-heading" className="sr-only">
@@ -165,10 +193,7 @@ const ShopPage = () => {
 
                     if (filter.brand === 'All') delete filter.brand;
 
-                    const { data, loading } = await refetch({ filter });
-
-                    if (!loading && data)
-                      setQueriedCars(utils.filterCars(data.filteredCars, filters));
+                    updateQueriedCars({ filter });
                   })();
 
                   if (args.selectedCategory) setSelectedCategory(args.selectedCategory);
@@ -225,4 +250,4 @@ const ShopPage = () => {
   );
 };
 
-export default ShopPage;
+export default CarPage;

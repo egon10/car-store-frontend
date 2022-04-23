@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import { Route, Routes, useLocation, Navigate } from 'react-router-dom';
 
 import Header from '../components/Header';
-import ShopPage from '../pages/Cars';
+import CarPage from '../pages/Cars';
 
 export const MainRouter = () => {
   const location = useLocation();
@@ -12,7 +12,7 @@ export const MainRouter = () => {
       {location.pathname === '/' && <Navigate to="/cars" />}
       <Header />
       <Routes>
-        <Route exact path="/cars" element={<ShopPage />} />
+        <Route exact path="/cars" element={<CarPage />} />
       </Routes>
     </Fragment>
   );
