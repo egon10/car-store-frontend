@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, Fragment } from 'react';
+import React, { useContext, useEffect, useState, Fragment, useMemo } from 'react';
 import { DatabaseContext } from '../providers/DatabaseProvider';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { useQuery } from '@apollo/client';
@@ -110,17 +110,24 @@ const CarPage = () => {
     updateQueriedCars({ search: searchText });
   }, [searchText.length]);
 
-  const queriedCarsFiltered = utils.filterByPrice(
-    utils.filterCars(
-      sort.index <= 1
-        ? utils.sortByPrice(queriedCars, sort.index === 0)
-        : utils.sortByDate(queriedCars),
-      filters
-    ),
-    filters
+  const queriedCarsFiltered = useMemo(
+    () =>
+      utils.filterByPrice(
+        utils.filterCars(
+          sort.index <= 1
+            ? utils.sortByPrice(queriedCars, sort.index === 0)
+            : utils.sortByDate(queriedCars),
+          filters
+        ),
+        filters
+      ),
+    [sort.index, queriedCars, filters, currentPage]
   );
 
-  const currentPageCars = utils.chunk(queriedCarsFiltered, MAX_ITEMS_PER_PAGE)[currentPage - 1];
+  const currentPageCars = useMemo(
+    () => utils.chunk(queriedCarsFiltered, MAX_ITEMS_PER_PAGE)[currentPage - 1],
+    [queriedCarsFiltered]
+  );
 
   useEffect(() => {
     if (queriedCarsFiltered && queriedCarsFiltered.length) {
